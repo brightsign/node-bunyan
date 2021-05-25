@@ -145,3 +145,28 @@ test('ensure Logger() rejects non-Logger parents', function (t) {
 
     t.end();
 });
+
+test('maxLength cannot be a string', function (t) {
+    var options = {name: 'foo', maxLength: 'hi'};
+
+    t.throws(function () { bunyan.createLogger(options); },
+        /invalid options.maxLength: must be an integer greater than zero/,
+        'options.maxLength: cannot be a string');
+
+    options = {name: 'foo', maxLength: {}};
+    t.throws(function () { bunyan.createLogger(options); },
+        /invalid options.maxLength: must be an integer greater than zero/,
+        'options.maxLength: cannot be an object');
+
+    options = {name: 'foo', maxLength: -1};
+    t.throws(function () { bunyan.createLogger(options); },
+        /invalid options.maxLength: must be an integer greater than zero/,
+        'options.maxLength: must be greater than zero');
+
+    options = {name: 'foo', maxLength: 10};
+    t.doesNotThrow(function () { bunyan.createLogger(options); },
+        'options.maxLength: 10 should be fine');
+
+    t.end();
+});
+
